@@ -1,7 +1,7 @@
 <template>
     <div>
-        <el-card class="login-card" shadow="always">
-            <h2 class="login-title">用户登录</h2>
+        <el-card  shadow="always">
+            <h2>用户登录</h2>
             <el-form>
                 <el-form-item label="用户名">
                 <el-input  placeholder="请输入用户名"></el-input>
