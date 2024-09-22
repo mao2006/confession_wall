@@ -1,18 +1,26 @@
 <template>
-    <el-container style="height: 100vh;">
-        <el-aside  class="sidebar">
-            <el-menu @select = "index_method.index_switch" default-active="1">
-                <el-menu-item index="1">表白社区</el-menu-item>
-                <el-menu-item index="2">我的表白</el-menu-item>
-                <el-menu-item index="3">个人主页</el-menu-item>
-            </el-menu>
-        </el-aside>
-
-        <el-container>
-            <RouterView />
+    <div class="common-layout">
+        <el-container style="height: 100vh;">
+            <el-header style="background-color: paleturquoise; color: white; height: 60px; line-height: 60px; text-align: center;">
+                表白墙
+            </el-header>
+            
+            <el-container style="height: calc(100vh - 60px);">
+                <el-aside width="200px">
+                    <el-menu @select="index_method.index_switch" default-active="1">
+                        <el-menu-item index="1">表白社区</el-menu-item>
+                        <el-menu-item index="2">我的表白</el-menu-item>
+                        <el-menu-item index="3">个人主页</el-menu-item>
+                    </el-menu>
+                </el-aside>
+        
+                <el-main style="padding: 20px; overflow: auto;" class="content-container">
+                    <router-view  />
+                </el-main>
+            </el-container>
         </el-container>
-    </el-container>
-</template>
+    </div>
+  </template>
 
 <script setup>
     import router from '@/router';
@@ -60,3 +68,28 @@
 
 </script>
 
+
+<style scoped>
+    
+    .el-container > .el-main {
+        flex: 1; 
+        display: flex; 
+        flex-direction: column;
+        min-width:100vh; 
+    }
+
+  
+    
+    .content {
+    word-wrap: break-word; 
+    word-break: break-all; 
+    white-space: normal; 
+    }
+
+    /* 强制 router-view 内部的内容占满父容器宽度 */
+    .content-container {
+    width: 100%; /* 强制内容占满父容器 */
+    height: 100%; /* 保证高度占满父容器 */
+    box-sizing: border-box; /* 让 padding 不影响宽度计算 */
+    }
+</style>
