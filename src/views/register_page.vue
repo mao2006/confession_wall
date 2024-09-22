@@ -5,7 +5,7 @@
             表白墙
         </el-header>
         <el-card  shadow="always">
-            <el-alert title="Success alert" v-if="alert.is_alert.value ==true" type="success" center show-icon />
+            <el-alert title="注册成功" v-if="alert.is_alert.value ==true" type="success" center show-icon />
             <h2>用户注册</h2>
             <el-form>
                 <el-form-item label="用户名">
