@@ -1,10 +1,10 @@
 <template> 
     
-    <div>
+    <div class="register-page">
         <el-header>
             表白墙
         </el-header>
-        <el-card  shadow="always">
+        <el-card  shadow="always" class="register-card">
             <el-alert title="注册成功" v-if="alert.is_alert.value ==true" type="success" center show-icon />
             <h2>用户注册</h2>
             <el-form>
@@ -20,7 +20,7 @@
                 </el-form-item>
                 <el-form-item>
                 <el-button type="primary" @click="alert.handle_alert()">注册</el-button>
-                <el-button type="default"  style="margin-left: 120px;" @click="handle_to_login" >登录页面</el-button>
+                <el-button type="default"  style="margin-left: 120px;" @click="button_package.handle_to_login" >登录页面</el-button>
                 </el-form-item>
             </el-form>
         </el-card>
@@ -51,12 +51,34 @@
 
     const alert = use_alert()
 
-    const handle_to_login = ()=> {
-        router.push('/login')
+
+    const button_package_func = ()=> {
+        const handle_to_login = ()=> {
+            router.push('/login')
+        }
+        return {
+            handle_to_login,
+        }
     }
+
+    const button_package = button_package_func()
 </script>
 
 <style scoped>
+    .register-page {
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        height: 100vh; 
+    }
+    .register-card {
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        max-width: 400px; 
+        width: 100%;
+    }
     .el-alert {
         margin: 20px 0 0;
     }

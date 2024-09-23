@@ -8,3 +8,14 @@ export const login_store = defineStore('login',
     })
   }
 )
+
+export const user_store = defineStore(
+  'user_message',
+  {
+    state:()=>({
+      user_name:void(0),
+      password:void(0),
+      user_id:void(0),
+    })
+  }
+)
