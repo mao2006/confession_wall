@@ -1,7 +1,7 @@
 <template>
     <div class="common-layout">
         <el-container style="height: 100vh;">
-            <el-header style="background-color: paleturquoise; color: white; height: 60px; line-height: 60px; text-align: center;">
+            <el-header style="background-color: pink; color: white; height: 60px; line-height: 60px; text-align: center;">
                 表白墙
             </el-header>
             
@@ -14,8 +14,8 @@
                     </el-menu>
                 </el-aside>
         
-                <el-main style="padding: 20px; overflow: auto;" class="content-container">
-                    <router-view  />
+                <el-main class="top">
+                    <RouterView />
                 </el-main>
             </el-container>
         </el-container>
@@ -70,12 +70,18 @@
 
 
 <style scoped>
+
+    .top {
+        position: relative; 
+        z-index: 10; 
+    }
     
     .el-container > .el-main {
         flex: 1; 
         display: flex; 
         flex-direction: column;
-        min-width:100vh; 
+        min-width: 0;
+        overflow-y: auto;
     }
 
   
@@ -86,10 +92,9 @@
     white-space: normal; 
     }
 
-    /* 强制 router-view 内部的内容占满父容器宽度 */
     .content-container {
-    width: 100%; /* 强制内容占满父容器 */
-    height: 100%; /* 保证高度占满父容器 */
-    box-sizing: border-box; /* 让 padding 不影响宽度计算 */
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box; 
     }
 </style>

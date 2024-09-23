@@ -1,7 +1,7 @@
 <template> 
     
     <div class="register-page">
-        <el-header>
+        <el-header style="background-color: pink; color: white; height: 60px; line-height: 60px; text-align: center;">
             表白墙
         </el-header>
         <el-card  shadow="always" class="register-card">

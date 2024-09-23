@@ -1,17 +1,18 @@
 <template>
-    <div class="page-content">
-      <p>welcome-page</p>
-    </div>
+      <div class="fon-color"> welcome_page</div>
 </template>
 
-<script>
-
+<script setup>
+import { onMounted } from 'vue';
+onMounted(
+    () => {
+        console.log("挂载成功")
+    }
+)
 </script>
 
 <style scoped>
-    .page-content {
-        width: 100%; /* 确保内容占据父容器的宽度 */
-        height: 100%; /* 确保内容占据父容器的高度 */
-        box-sizing: border-box; /* 确保 padding 不会影响宽度计算 */
+    .fon-color {
+        color: #FF4F5B;
     }
 </style>
