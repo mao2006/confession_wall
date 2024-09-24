@@ -50,9 +50,9 @@
     const temp_user_storage = temp_user_storage_func()
 
 
-    const push_into_store = () => {
-        store_about_user.user_name = temp_user_storage.username.value
-        store_about_user.password = temp_user_storage.password.value
+    const push_into_store = (token:any) => {
+        store_about_user.token = token
+        
     }
 
 
@@ -60,7 +60,6 @@
     const button_package_func = ()=>{
         const handle_login = () => {
             store_login.login_status = true;
-            push_into_store()
             router.push('/main')
         }
 
