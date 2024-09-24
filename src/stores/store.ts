@@ -13,7 +13,7 @@ export const user_store = defineStore(
   'user_message',
   {
     state:()=>({
-      token:void(0),
+      token:'',
     })
   }
 )
