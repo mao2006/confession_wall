@@ -4,6 +4,8 @@
     
         <el-scrollbar height="100%">
             <div style="margin-top: 40px;">
+                <el-alert title="屏蔽成功" 
+                v-if="mute_success_alert.is_alert.value" type="success" center show-icon />
                 <div v-for="(item, index) in all_post" :key="item.post_id">
                     <div class="scrollbar-demo-item">
                         <div class="post-info">
@@ -23,6 +25,7 @@
                 title="警告"
                 width="500"
             >
+            <el-alert title="屏蔽失败 用户已被屏蔽" v-if="mute_error_alert.is_alert.value" type="error" center show-icon />
                 <span>你确定要屏蔽此用户吗</span>
                 <template #footer>
                 <div class="dialog-footer">
@@ -47,6 +50,8 @@ const all_post = ref([]);
 
 const waited_mute_postid = ref(0)
 
+
+
 //屏蔽 弹出框
 const control_mute_func = () => {
     const mute_visible = ref(false)
@@ -65,7 +70,57 @@ const control_mute_func = () => {
     }
 }
 
+
+
 const control_mute = control_mute_func()
+
+//屏蔽成功 alert
+
+const mute_success_alert_func = () => {
+    const is_alert = ref(false)
+
+    const handle_close = ()=>{
+        is_alert.value = false
+    }
+
+    const handle_alert = ()=>{
+        is_alert.value = true;
+        setTimeout(()=>{handle_close()},3000)
+    }
+    return {
+        is_alert,
+        handle_close,
+        handle_alert
+    }
+}
+
+const mute_success_alert = mute_success_alert_func()
+
+
+//屏蔽失败 alert
+
+const mute_error_alert_func = ()=> {
+    const is_alert = ref(false)
+
+    const handle_close = ()=>{
+        is_alert.value = false
+    }
+
+    const handle_alert = ()=>{
+        is_alert.value = true;
+        setTimeout(()=>{handle_close()},3000)
+    }
+    return {
+        is_alert,
+        handle_close,
+        handle_alert
+    }
+}
+
+const mute_error_alert = mute_error_alert_func()
+
+
+//生命周期钩子 挂载帖子
 
 onBeforeMount(() => {
     axios({
@@ -85,6 +140,9 @@ onBeforeMount(() => {
     });
 });
 
+
+
+//屏蔽 弹出框
 const handle_mute_firststep = (post_id:number) => {
     waited_mute_postid.value = post_id
     control_mute.to_visible()
@@ -105,6 +163,12 @@ const handle_mute = () => {
     post_promise.then(
         response => {
             console.log(response.data)
+            if(response.data.code===200503){
+                mute_error_alert.handle_alert()
+            }else if(response.data.code===200){
+                control_mute.to_unvisible();
+                mute_success_alert.handle_alert()
+            }
         }
     )
 
