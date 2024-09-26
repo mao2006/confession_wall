@@ -128,6 +128,7 @@ onBeforeMount(() => {
         }
     })
     .then(response => {
+        console.log(response)
         if (response.data.code === 200) {
             all_post.value = response.data.data.confession_list;
         }
@@ -180,15 +181,13 @@ const handle_mute = () => {
 
 <style scoped>
 .scrollbar-demo-item {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100px;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 4px;
-    background: var(--el-color-primary-light-9);
-    color: var(--el-color-primary);
+    background-color: #fff; /* 白色背景 */
+    border: 1px solid #e0e0e0; /* 浅灰色边框 */
+    border-radius: 8px; /* 圆角 */
+    padding: 16px; /* 内边距 */
+    margin-bottom: 20px; /* 底部外边距 */
+    transition: box-shadow 0.3s; /* 过渡效果 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
 }
 
 .post-info {
