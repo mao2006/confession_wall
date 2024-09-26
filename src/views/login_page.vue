@@ -129,7 +129,8 @@
         display: flex;
         justify-content: center;
         align-items: center; 
-        height: 100vh; 
+        height: 100%; 
+        width: 100%;
     }
     .login-card {
         background-color: white;

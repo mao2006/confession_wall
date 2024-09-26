@@ -1,7 +1,4 @@
 <template>
-    
-        
-    
         <el-scrollbar height="100%">
             <div style="margin-top: 40px;">
                 <el-alert title="屏蔽成功" 

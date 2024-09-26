@@ -2,6 +2,11 @@
     <p>my_comfession</p>
 </template>
 
-<script>
+<script setup lang="ts">
 
 </script>
+
+
+<style>
+
+</style>
