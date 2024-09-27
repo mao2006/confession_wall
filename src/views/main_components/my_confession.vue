@@ -1,9 +1,45 @@
 <template>
     <div style="height: 100vh; display: flex; flex-direction: column;">
+        <el-alert title="成功" v-if="commit_error_alert.is_alert.value===true" type="success" center show-icon />
+        <el-dialog
+            v-model="control_post_dialog.dialog_visible_status.value"
+            title="发布帖子"
+            width="600"
+        >
+            <el-alert :title="error_alert_message" v-if="commit_error_alert.is_alert.value===true" type="error" center show-icon />
+            <div>
+                <el-input 
+                    type="textarea" 
+                    placeholder="输入帖子内容" 
+                    maxlength="200"
+                    v-model="temp_post_post.post.value"
+                    rows="10"  
+                ></el-input>
+                <el-checkbox label="是否匿名" v-model="temp_post_post.unnamed.value">匿名</el-checkbox>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
+                <el-button type="primary" @click="handle_commit_post">发布</el-button>
+            </div>
+        </el-dialog>
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <el-button type="primary" plain style="margin-left: auto;">新建帖子</el-button>
+            <el-button type="primary" plain style="margin-left: auto;" @click = "control_post_dialog.to_visible"> 新建帖子</el-button>
         </div>
-        <!-- 滚动区域 -->
+        
+        <el-dialog
+            v-model="confirm_delete_status"
+            title="确认删除"
+            width="600"
+        >
+            <div style="text-align: center; margin-bottom: 20px;">
+                <span>你确认要删除此表白吗</span>
+            </div>
+            <div style="text-align: right;">
+                
+                <el-button @click="handle_alert_confirm_delete.to_unvisible">取消</el-button>
+                <el-button @click="handle_commit_delete" type="danger">确认</el-button>
+            </div>
+        </el-dialog>
         <el-scrollbar style="flex: 1; margin-top: 20px;">
             <div style="padding: 16px;">
                 <div v-for="(item, index) in temp_post_package" :key="item.post_id" class="scrollbar-demo-item">
@@ -13,11 +49,12 @@
                     </div>
                     <div class="button-container">
                         <el-button type="primary">修改</el-button>
-                        <el-button type="danger">删除</el-button>
+                        <el-button type="danger" @click = "handle_delete_first_step(item.post_id)">删除</el-button>
                     </div>
                 </div>
             </div>
         </el-scrollbar>
+        
     </div>
 </template>
 
@@ -30,6 +67,10 @@ const temp_user_store = user_store();
 const token = temp_user_store.token;
 
 const temp_post_package = ref([])
+const error_alert_message = ref('')
+
+const temp_post_undeleted = ref(0)
+
 
 onBeforeMount(() => {
     const get_my_comfession_promise = axios({
@@ -45,7 +86,135 @@ onBeforeMount(() => {
             temp_post_package.value = response.data.data.my_confession_list;
         }
     });
+
 });
+
+const handle_delete_first_step = (post_id:number)=> {
+    // console.log(post_id)
+    temp_post_undeleted.value = post_id
+    handle_alert_confirm_delete.to_visible()
+}
+
+//发表帖子 弹出框控制
+const control_post_dialog_func = () => {
+    const dialog_visible_status = ref(false)
+    const to_visible = () => {
+        dialog_visible_status.value = true
+    }
+    const to_unvisible = () => {
+        dialog_visible_status.value = false
+    }
+
+    return {
+        dialog_visible_status,
+        to_visible,
+        to_unvisible
+    }
+}
+
+const control_post_dialog = control_post_dialog_func()
+
+
+const temp_post_post = {
+    post:ref(''),
+    unnamed:ref(false)
+}
+
+const commit_error_message = ref('')
+
+const commit_error_alert_func = ()=> {
+    const is_alert = ref(false)
+
+    const handle_close = ()=>{
+        is_alert.value = false
+    }
+
+    const handle_alert = ()=>{
+        is_alert.value = true;
+        setTimeout(()=>{handle_close()},3000)
+    }
+    return {
+        is_alert,
+        handle_close,
+        handle_alert
+    }
+}
+
+const commit_error_alert = commit_error_alert_func()
+
+const handle_commit_post = () => {
+    console.log(temp_post_post.post.value)
+    console.log(temp_post_post.unnamed.value)
+    if(temp_post_post.post.value===''){
+        error_alert_message.value = '帖子内容不能为空'
+        commit_error_alert.handle_alert()
+    }else{
+        const commit_promise = axios({
+            method:'post',
+            url:'/api/api/confession',
+            headers:{
+                Authorization:token,
+            },
+            data:{
+                content:temp_post_post.post.value,
+                unnamed:temp_post_post.unnamed.value
+            }
+        })
+
+        commit_promise.then(
+            response => {
+                console.log(response)
+                if(response.data.code===200502){
+                    error_alert_message.value = '权限不足'
+                    commit_error_alert.handle_alert()
+                }else if(response.data.code===200){
+                    control_post_dialog.to_unvisible()
+                }
+            }
+        )
+    }
+}
+
+const confirm_delete_status = ref(false)
+
+
+const handle_alert_confirm_delete_func = () => {
+    const to_visible = () => {
+        confirm_delete_status.value = true
+    }
+    const to_unvisible = () => {
+        confirm_delete_status.value = false
+    }
+
+    return {
+        to_unvisible,
+        to_visible
+    }
+}
+
+const handle_alert_confirm_delete = handle_alert_confirm_delete_func()
+const handle_commit_delete = () => {
+    const delete_promise = axios({
+        method:'delete',
+        url:'/api/api/confession',
+        headers:{
+            Authorization:token
+        },
+        data:{
+            post_id:temp_post_undeleted.value
+        }
+    })
+
+    delete_promise.then(
+        response => {
+            if(response.data.code === 200){
+                confirm_delete_status.value = false
+                // console.log('123')
+            }
+        }
+    )
+}
+
 </script>
 
 <style scoped>

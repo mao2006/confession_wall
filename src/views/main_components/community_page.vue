@@ -22,7 +22,7 @@
                 title="警告"
                 width="500"
             >
-            <el-alert title="屏蔽失败 用户已被屏蔽" v-if="mute_error_alert.is_alert.value" type="error" center show-icon />
+            <el-alert :title="alert_message_temp" v-if="mute_error_alert.is_alert.value" type="error" center show-icon />
                 <span>你确定要屏蔽此用户吗</span>
                 <template #footer>
                 <div class="dialog-footer">
@@ -146,6 +146,9 @@ const handle_mute_firststep = (post_id:number) => {
     control_mute.to_visible()
 }
 
+
+const alert_message_temp = ref('')
+
 const handle_mute = () => {
     const post_promise = axios({
         method:'post',
@@ -161,7 +164,11 @@ const handle_mute = () => {
     post_promise.then(
         response => {
             console.log(response.data)
-            if(response.data.code===200503){
+            if(response.data.code===200510){
+                alert_message_temp.value = '不能屏蔽自己的帖子'
+                mute_error_alert.handle_alert()
+            }else if(response.data.code===200503){
+                alert_message_temp.value = '屏蔽失败 屏蔽关系已存在'
                 mute_error_alert.handle_alert()
             }else if(response.data.code===200){
                 control_mute.to_unvisible();
