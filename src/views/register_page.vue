@@ -9,8 +9,10 @@
             <el-alert title="两次输入的密码不一致" v-if="alert_error_inconsistent.is_alert.value ==true" type="error" center show-icon />
             <el-alert title="还有必填项未输入" v-if="alert_null_exist.is_alert.value ==true" type="error" center show-icon />
             <el-alert title="用户名已存在" v-if="alert_duplicate_username.is_alert.value ==true" type="error" center show-icon />
-            <el-alert title="密码不符合要求" v-if="alert_error_password.is_alert.value ==true" type="error" center show-icon />
-            <h2>用户注册</h2>
+            <el-alert title="账号或密码不符合要求" v-if="alert_error_password.is_alert.value ==true" type="error" center show-icon />
+            <h2>用户注册</h2><h4>账号规范</h4>
+            <span>用户名:4-16位字母数字下划线</span><br><span>密码:8-32位字母数字下划线<br>至少一个小写字母和数字</span>
+            <br><br>
             <el-form>
                 <el-form-item label="用户名">
                 <el-input  placeholder="请输入用户名" v-model="temp_user_package.temp_username.value" ></el-input>
