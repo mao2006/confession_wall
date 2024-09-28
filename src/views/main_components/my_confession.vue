@@ -64,7 +64,7 @@
         </el-dialog>
         <el-scrollbar style="flex: 1; margin-top: 20px;">
             <div style="padding: 16px;">
-                <div v-for="(item, index) in temp_post_package" :key="item.post_id" class="scrollbar-demo-item">
+                <div v-for="(item, index) in temp_post_package"  class="scrollbar-demo-item">
                     <div class="post-info">
                         <div class="post-id">帖子: {{ item.post_id }}</div>
                         <div class="content">{{ item.content }}</div>
@@ -85,10 +85,15 @@ import axios from 'axios';
 import { ref, onBeforeMount } from 'vue';
 import { user_store } from '@/stores/store';
 
+interface Post {
+    post_id: number; 
+    content: string; 
+}
+
 const temp_user_store = user_store();
 const token = temp_user_store.token;
 
-const temp_post_package = ref([])
+const temp_post_package = ref<Post[]>([])
 const error_alert_message = ref('')
 
 const temp_post_undeleted = ref(0)
@@ -97,7 +102,7 @@ const temp_post_undeleted = ref(0)
 onBeforeMount(() => {
     const get_my_comfession_promise = axios({
         method:'get',
-        url:'/api/api/my_confession',
+        url:'/api/my_confession',
         headers: {
             Authorization: token,
         }
@@ -193,7 +198,7 @@ const handle_commit_post = () => {
     }else{
         const commit_promise = axios({
             method:'post',
-            url:'/api/api/confession',
+            url:'/api/confession',
             headers:{
                 Authorization:token,
             },
@@ -240,7 +245,7 @@ const handle_alert_confirm_delete = handle_alert_confirm_delete_func()
 const handle_commit_delete = () => {
     const delete_promise = axios({
         method:'delete',
-        url:'/api/api/confession',
+        url:'/api/confession',
         headers:{
             Authorization:token
         },
@@ -325,7 +330,7 @@ const handle_revise_post = () => {
     }else{
         const revise_promise = axios({
             method:"put",
-            url:'/api/api/confession',
+            url:'/api/confession',
             headers:{
                 Authorization:token,
             },

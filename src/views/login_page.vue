@@ -78,7 +78,7 @@
     const axios_method_func = (username:string,password:string) => {
         const axios_promise = axios({
             method:'post',
-            url:'/api/api/user/login',
+            url:'/api/user/login',
             data:{
                 'username':username,
                 'password':password,

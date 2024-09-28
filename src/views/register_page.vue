@@ -34,7 +34,7 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
     import router from '@/router/index'
-import axios from 'axios';
+    import axios from 'axios';
 
 
 
@@ -184,7 +184,7 @@ import axios from 'axios';
             }else{
                 const axios_promise = axios({
                     method:"post",
-                    url:'/api/api/user/reg',
+                    url:'/api/user/reg',
                     data:{
                         'username':temp_user_package.temp_username.value,
                         'password':temp_user_package.temp_password.value,

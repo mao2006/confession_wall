@@ -17,12 +17,7 @@ export default defineConfig({
       '/api': {
         target: 'http://101.37.29.240:8080',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      },
-      '/avator':{
-        target:'https://sm.ms/api/v2/upload',
-        changeOrigin:true,
-        rewrite:(path) => path.replace(/^\/api/,'')
+        // rewrite: (path) => path.replace(/^\/api/, '')
       }
     },
   }

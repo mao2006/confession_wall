@@ -110,7 +110,7 @@
             // console.log(typeof(token))
             const user_message_promise = axios({
                 method:'get',
-                url:'/api/api/user',
+                url:'/api/user',
                 headers: {
                     Authorization: token
                 }
@@ -199,7 +199,7 @@
         }else{
             const submit_promise = axios({
                 method:'put',
-                url:'/api/api/user',
+                url:'/api/user',
                 headers:{
                     Authorization:token,
                 },
@@ -284,7 +284,7 @@
 
     const updata_avator_promise = axios({
         method: 'post',
-        url: '/api/api/upload',
+        url: '/api/upload',
         headers: {
             'Authorization': token,
         },
@@ -297,7 +297,7 @@
 
             const submit_avator_promise = axios({
                 method:'put',
-                url:'/api/api/user',
+                url:'/api/user',
                 headers:{
                     Authorization:token,
                 },

@@ -10,7 +10,7 @@
                 </template>
             </el-dialog>
             <el-alert title="屏蔽成功" v-if="mute_success_alert.is_alert.value" type="success" center show-icon />
-            <div v-for="(item, index) in all_post" :key="item.post_id">
+            <div v-for="(item, index) in all_post" >
                 <div class="scrollbar-demo-item">
                     <div class="post-info">
                         <el-avatar :src="item.avatar" size="32" class="avatar" />
@@ -50,11 +50,18 @@ import { ref, onBeforeMount } from 'vue';
 import axios from 'axios';
 import { user_store } from '@/stores/store';
 
+interface Post {
+    post_id: number; // 帖子ID
+    avatar: string; // 头像URL
+    nickname: string; // 用户昵称
+    content: string; // 帖子内容
+}
+
 const comment_alert = ref(false)
 
 const temp_user_store = user_store();
 const token = temp_user_store.token;
-const all_post = ref([]);
+const all_post = ref<Post[]>([]);
 
 const waited_mute_postid = ref(0);
 
@@ -114,7 +121,7 @@ const mute_error_alert = mute_error_alert_func();
 onBeforeMount(() => {
     axios({
         method: 'get',
-        url: '/api/api/confession',
+        url: '/api/confession',
         headers: {
             Authorization: token
         }
@@ -139,7 +146,7 @@ const alert_message_temp = ref('');
 const handle_mute = () => {
     const post_promise = axios({
         method: 'post',
-        url: '/api/api/blacklist',
+        url: '/api/blacklist',
         headers: {
             Authorization: token,
         },
