@@ -72,6 +72,7 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import { onBeforeMount } from 'vue';
+import { error } from 'console';
 
     const store_usermessage = user_store()
     const token = store_usermessage.token
@@ -267,47 +268,74 @@
 
     const handle_avatar_change = (file:any) => {
         console.log("111")
-        console.log(file.raw)
+        console.log(typeof(file))
         avatar_file.value = file.raw;
     };
 
     const handle_upload_avator = () => {
-        // console.log(avatar_file.value)
-        if (avatar_file.value===null) {
-            avatar_error_message.value = '请先选择头像文件!'
-            avatar_error_alert.handle_alert()
-            return;
-        }
+    if (avatar_file.value === null) {
+        avatar_error_message.value = '请先选择头像文件!';
+        avatar_error_alert.handle_alert();
+        return;
+    }
 
-        const updata_avator_promise = axios({
-            method:'put',
-            url:'/api/api/user',
-            headers:{
-                'Authorization': token,
-            },
-            data:{
-                profile_photo:avatar_file.value
-            }
-        })
+    const formData = new FormData();
+    formData.append('picture', avatar_file.value); 
 
-        updata_avator_promise.then(response => {
+    const updata_avator_promise = axios({
+        method: 'post',
+        url: '/api/api/upload',
+        headers: {
+            'Authorization': token,
+        },
+        data: formData 
+    });
+
+    updata_avator_promise.then(response => {
+        if (response.data.code === 200) {
+            const url:string = response.data.data.url
+
+            const submit_avator_promise = axios({
+                method:'put',
+                url:'/api/api/user',
+                headers:{
+                    Authorization:token,
+                },
+                data:{
+                    avatar:url,
+                }
+            })
+
+            submit_avator_promise.then(
+                response => {
+                    if(response.data.code===200){
+                        change_avater_alert_visible.value = false;
+                        nickname_success_alert.handle_alert();
+                        location.reload()
+                    }
+                }
+            )
+
+            submit_avator_promise.catch(
+                error => {
+                    console.log(error)
+                }
+            )
+            // console.log(response.data.data.url)
+            // change_avater_alert_visible.value = false;
+            // nickname_success_alert.handle_alert();
+        } else {
             console.log(response)
-            if (response.data.code===200) {
-                console.log(response)
-                change_avater_alert_visible.value = false; // 关闭对话框
-                nickname_success_alert.handle_alert()
-            } else {
-                avatar_error_message.value = '上传失败!'
-                avatar_error_alert.handle_alert()
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            avatar_error_message.value = '上传失败!'
-            avatar_error_alert.handle_alert()
-        });
-    };
-    
+            avatar_error_message.value = '上传失败!';
+            avatar_error_alert.handle_alert();
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        avatar_error_message.value = '上传失败!';
+        avatar_error_alert.handle_alert();
+    });
+};
 </script>
 
 <style scoped>
