@@ -385,9 +385,11 @@ const handle_revise_post = () => {
 }
 
 .content {
-    font-size: 16px;
-    color: #666;
-    margin-bottom: 12px;
+    text-align: center;
+    flex-grow: 1;
+    margin: 5px 0;
+    word-wrap: break-word; /* 或使用 overflow-wrap: break-word; */
+    overflow-wrap: break-word; /* 这两者都可以 */
 }
 
 .button-container {

@@ -207,6 +207,8 @@ const handle_mute = () => {
     text-align: center;
     flex-grow: 1;
     margin: 5px 0;
+    word-wrap: break-word; /* 或使用 overflow-wrap: break-word; */
+    overflow-wrap: break-word; /* 这两者都可以 */
 }
 
 .button-container {
