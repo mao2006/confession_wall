@@ -57,6 +57,8 @@ router.beforeEach(
     }else if((to.path==='/login'||to.path==='/register'||to.path==='/')&&store_loginpage.login_status==true){
       // console.log('111')
       next('/main')
+    }else if(to.path==='/main'){
+      next('/main/community')
     }else{
       // console.log(store_loginpage.login_status)
       next()

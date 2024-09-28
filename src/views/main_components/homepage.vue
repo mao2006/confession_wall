@@ -214,6 +214,7 @@
                         change_nickname_alert_visible.value = false
                         console.log(response.data)
                         nickname_success_alert.handle_alert()
+                        location.reload()
                     }
                 }
             )
