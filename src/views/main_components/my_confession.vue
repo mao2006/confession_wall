@@ -1,6 +1,7 @@
 <template>
     <div style="height: 100vh; display: flex; flex-direction: column;">
-        <el-alert title="成功" v-if="commit_error_alert.is_alert.value===true" type="success" center show-icon />
+        <el-alert title="成功" v-if="commit_success_alert.is_alert.value===true" type="success" center show-icon />
+        <!-- 发布帖子 -->
         <el-dialog
             v-model="control_post_dialog.dialog_visible_status.value"
             title="发布帖子"
@@ -20,6 +21,27 @@
             <div style="margin-top: 20px; text-align: right;">
                 <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
                 <el-button type="primary" @click="handle_commit_post">发布</el-button>
+            </div>
+        </el-dialog>
+        <!-- 修改帖子 -->
+        <el-dialog
+            v-model="control_revise_dialog.dialog_visible_status.value"
+            title="修改帖子"
+            width="600"
+        >
+            <el-alert :title="error_alert_message" v-if="revise_error_alert.is_alert.value===true" type="error" center show-icon />
+            <div>
+                <el-input 
+                    type="textarea" 
+                    placeholder="输入帖子内容" 
+                    maxlength="200"
+                    v-model="temp_post"
+                    rows="10"  
+                ></el-input>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
+                <el-button type="primary" @click="handle_revise_post" >发布</el-button>
             </div>
         </el-dialog>
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -48,7 +70,7 @@
                         <div class="content">{{ item.content }}</div>
                     </div>
                     <div class="button-container">
-                        <el-button type="primary">修改</el-button>
+                        <el-button type="primary" @click = "revise_post_first_step(item.post_id,item.content)">修改</el-button>
                         <el-button type="danger" @click = "handle_delete_first_step(item.post_id)">删除</el-button>
                     </div>
                 </div>
@@ -142,6 +164,26 @@ const commit_error_alert_func = ()=> {
 
 const commit_error_alert = commit_error_alert_func()
 
+const commit_success_alert_func = ()=> {
+    const is_alert = ref(false)
+
+    const handle_close = ()=>{
+        is_alert.value = false
+    }
+
+    const handle_alert = ()=>{
+        is_alert.value = true;
+        setTimeout(()=>{handle_close()},3000)
+    }
+    return {
+        is_alert,
+        handle_close,
+        handle_alert
+    }
+}
+
+const commit_success_alert = commit_success_alert_func()
+
 const handle_commit_post = () => {
     console.log(temp_post_post.post.value)
     console.log(temp_post_post.unnamed.value)
@@ -169,6 +211,8 @@ const handle_commit_post = () => {
                     commit_error_alert.handle_alert()
                 }else if(response.data.code===200){
                     control_post_dialog.to_unvisible()
+                    location.reload()
+                    commit_success_alert.handle_alert()
                 }
             }
         )
@@ -209,11 +253,104 @@ const handle_commit_delete = () => {
         response => {
             if(response.data.code === 200){
                 confirm_delete_status.value = false
+                location.reload()
+                commit_success_alert.handle_alert()
                 // console.log('123')
             }
         }
     )
 }
+
+//修改帖子
+
+//弹出框
+const revise_error_alert_func = ()=> {
+    const is_alert = ref(false)
+
+    const handle_close = ()=>{
+        is_alert.value = false
+    }
+
+    const handle_alert = ()=>{
+        is_alert.value = true;
+        setTimeout(()=>{handle_close()},3000)
+    }
+    return {
+        is_alert,
+        handle_close,
+        handle_alert
+    }
+}
+
+const revise_error_alert = revise_error_alert_func()
+
+
+//修改帖子 对话框方法
+const control_revise_dialog_func = () => {
+    const dialog_visible_status = ref(false)
+    const to_visible = () => {
+        dialog_visible_status.value = true
+    }
+    const to_unvisible = () => {
+        dialog_visible_status.value = false
+    }
+
+    return {
+        dialog_visible_status,
+        to_visible,
+        to_unvisible
+    }
+}
+
+const control_revise_dialog = control_revise_dialog_func()
+//第一步 弹出对话框 存储变量
+
+const temp_post = ref('')
+const post_id_revise = ref(0)
+
+const revise_post_first_step = (post_id:number,post:string) => {
+    temp_post.value = post
+    post_id_revise.value = post_id
+    control_revise_dialog.to_visible()
+    // console.log(temp_post.value)
+    // console.log(post_id_revise.value)
+}
+
+//第二步 提交请求
+
+const handle_revise_post = () => {
+    if(temp_post.value===''){
+        error_alert_message.value = "帖子内容不能为空"
+        revise_error_alert.handle_alert()
+    }else{
+        const revise_promise = axios({
+            method:"put",
+            url:'/api/api/confession',
+            headers:{
+                Authorization:token,
+            },
+            data:{
+                post_id:post_id_revise.value,
+                content:temp_post.value
+            }
+        })
+
+        revise_promise.then(
+            response => {
+                console.log(response.data)
+                if(response.data.code===200502){
+                    error_alert_message.value = "权限不足"
+                    revise_error_alert.handle_alert()
+                }else if(response.data.code===200){
+                    control_revise_dialog.to_unvisible()
+                    location.reload()
+                    commit_success_alert.handle_alert()
+                }
+            }
+        )
+    }
+}
+
 
 </script>
 

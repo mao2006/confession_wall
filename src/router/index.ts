@@ -51,11 +51,14 @@ router.beforeEach(
   (to,from,next)=>{
     const store_loginpage = login_store()
 
-    if(to.path!='/login' && to.path!='/register' &&store_loginpage.login_status==false){
-      // console.log('111')
+    if(to.path!='/login' && to.path!='/register'&&store_loginpage.login_status==false){
+      // console.log('333')
       next('/login')
+    }else if((to.path==='/login'||to.path==='/register'||to.path==='/')&&store_loginpage.login_status==true){
+      // console.log('111')
+      next('/main')
     }else{
-      // console.log('222')
+      // console.log(store_loginpage.login_status)
       next()
     }
 

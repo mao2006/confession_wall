@@ -5,8 +5,14 @@ export const login_store = defineStore('login',
   {
     state:()=>({
       login_status:false,
-    })
-  }
+    }),
+    actions: {
+        reset() {
+            this.$reset();
+        }
+    },
+    persist:true,
+  },
 )
 
 export const user_store = defineStore(
@@ -14,6 +20,12 @@ export const user_store = defineStore(
   {
     state:()=>({
       token:'',
-    })
-  }
+    }),
+    actions: {
+        reset() {
+            this.$reset();
+        }
+    },
+    persist:true,
+  },
 )
