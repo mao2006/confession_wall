@@ -72,7 +72,6 @@
     import { ref } from 'vue';
     import axios from 'axios';
     import { onBeforeMount } from 'vue';
-import { error } from 'console';
 
     const store_usermessage = user_store()
     const token = store_usermessage.token
