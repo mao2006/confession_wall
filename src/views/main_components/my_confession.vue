@@ -40,7 +40,7 @@
                 ></el-input>
             </div>
             <div style="margin-top: 20px; text-align: right;">
-                <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
+                <el-button @click="control_revise_dialog.to_unvisible">取消</el-button>
                 <el-button type="primary" @click="handle_revise_post" >发布</el-button>
             </div>
         </el-dialog>
