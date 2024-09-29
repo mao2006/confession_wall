@@ -118,7 +118,7 @@ const mute_error_alert_func = () => {
 
 const mute_error_alert = mute_error_alert_func();
 
-onBeforeMount(() => {
+const refresh_post = () => {
     axios({
         method: 'get',
         url: '/api/confession',
@@ -134,6 +134,10 @@ onBeforeMount(() => {
     .catch(error => {
         console.log(error);
     });
+}
+
+onBeforeMount(() => {
+    refresh_post()
 });
 
 const handle_mute_firststep = (post_id:number) => {
@@ -165,7 +169,7 @@ const handle_mute = () => {
         } else if (response.data.code === 200) {
             control_mute.to_unvisible();
             mute_success_alert.handle_alert();
-            location.reload()
+            refresh_post()
         }
     });
 

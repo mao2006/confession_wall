@@ -98,8 +98,7 @@ const error_alert_message = ref('')
 
 const temp_post_undeleted = ref(0)
 
-
-onBeforeMount(() => {
+const refresh_post = () => {
     const get_my_comfession_promise = axios({
         method:'get',
         url:'/api/my_confession',
@@ -113,7 +112,11 @@ onBeforeMount(() => {
             temp_post_package.value = response.data.data.my_confession_list;
         }
     });
+}
 
+
+onBeforeMount(() => {
+    refresh_post()
 });
 
 const handle_delete_first_step = (post_id:number)=> {
@@ -216,7 +219,7 @@ const handle_commit_post = () => {
                     commit_error_alert.handle_alert()
                 }else if(response.data.code===200){
                     control_post_dialog.to_unvisible()
-                    location.reload()
+                    refresh_post()
                     commit_success_alert.handle_alert()
                 }
             }
@@ -258,7 +261,7 @@ const handle_commit_delete = () => {
         response => {
             if(response.data.code === 200){
                 confirm_delete_status.value = false
-                location.reload()
+                refresh_post()
                 commit_success_alert.handle_alert()
                 // console.log('123')
             }
@@ -348,7 +351,7 @@ const handle_revise_post = () => {
                     revise_error_alert.handle_alert()
                 }else if(response.data.code===200){
                     control_revise_dialog.to_unvisible()
-                    location.reload()
+                    refresh_post()
                     commit_success_alert.handle_alert()
                 }
             }
