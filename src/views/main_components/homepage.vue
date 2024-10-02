@@ -9,6 +9,15 @@
         show-icon 
         style="position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: 300px; z-index: 1000;"
         />
+        <el-alert 
+        title="取消屏蔽成功" 
+        type="success" 
+        v-if="cancel_mute_success_alert.is_alert.value === true" 
+        class="alert_container" 
+        center 
+        show-icon 
+        style="position: fixed; top: 100px; left: 50%; transform: translateX(-50%); width: 300px; z-index: 1000;"
+        />
         <el-dialog title="修改昵称" v-model="change_nickname_alert_visible" width="30%" 
         >
             <el-alert title="修改失败 昵称不能为空" style="border-bottom: 10px ;-bottom: 10px;" v-if="nickname_error_alert.is_alert.value" type="error" center show-icon />
@@ -63,6 +72,21 @@
                 </div>
                 <p class="mid">{{temp_user_package.nickname}}</p>
             </el-card>
+
+            <el-card class="block" shadow="hover" style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2>已屏蔽的人</h2>
+                </div>
+                <el-row gutter={20}>
+                    <el-col v-for="(user, index) in mute_list" :key="index" :span="8">
+                        <div class="user-item">
+                            <img :src="user.avatar" alt="头像" class="compressed-image" />
+                            <span>{{ user.nickname }}</span>
+                            <el-button type="danger" @click = "handle_remove_mute(user.target_id)">取消屏蔽</el-button>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-card>
         </el-main>
     </el-container>
 </template>
@@ -104,8 +128,88 @@
     
     const nickname_temp = ref('')
 
+    
+    interface mute_list {
+        nickname:string,
+        avatar:string,
+        target_id: number
+    }
+
+    //屏蔽列表
+    const mute_list = ref<mute_list[]>([])
+
+    //获取方法
+    const get_mute_list = () => {
+        //获取被我屏蔽的人
+        const mute_promise = axios({
+            method:'get',
+            url:'/api/blacklist',
+            headers:{
+                Authorization:token
+            }
+        })
+
+        mute_promise.then(
+            response => {
+                if(response.data.code===200){
+                    // console.log(response.data.data.blacklist)
+                    mute_list.value = response.data.data.blacklist
+                }
+                // console.log("111")
+                // console.log(mute_list.value[0])
+            }
+        )
+    }
+
+    //取消屏蔽成功 alert
+
+
+    const cancel_mute_success_alert_func = ()=> {
+        const is_alert = ref(false)
+
+        const handle_close = ()=>{
+            is_alert.value = false
+        }
+
+        const handle_alert = ()=>{
+            is_alert.value = true;
+            setTimeout(()=>{handle_close()},3000)
+        }
+        return {
+            is_alert,
+            handle_close,
+            handle_alert
+        }
+    }
+
+    const cancel_mute_success_alert = cancel_mute_success_alert_func()
+
+    //取消屏蔽
+    const handle_remove_mute = (target_id:number) => {
+        const remove_mute_promise = axios({
+            method:"delete",
+            url:'/api/blacklist',
+            headers:{
+                Authorization:token,
+            },
+            data:{
+                target_id:target_id
+            }
+        })
+
+        remove_mute_promise.then(
+            response => {
+                if(response.data.code===200){
+                    get_mute_list()
+                    cancel_mute_success_alert.handle_alert()
+                }
+            }
+        )
+    }
+
     //生命周期钩子 获取个人信息
     onBeforeMount(
+        //获取个人信息
         () => {
             // console.log(typeof(token))
             const user_message_promise = axios({
@@ -133,8 +237,9 @@
                     console.log(error)
                 }
             )
-        },
 
+            get_mute_list()
+        }
         
     )
 
@@ -182,6 +287,8 @@
     }
 
     const nickname_success_alert = change_nickname_error_alert_func()
+
+    
 
 
     const handle_alert_change_avatar = () => {
@@ -336,6 +443,9 @@
         avatar_error_alert.handle_alert();
     });
 };
+
+
+
 </script>
 
 <style scoped>
