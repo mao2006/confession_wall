@@ -239,6 +239,33 @@ const handle_finish_comment = () => {
     temp_comment.value = []
     comment_alert.value = false
 }
+
+
+//删除评论
+
+const delete_comment = (comment_id:number) => {
+    const delet_comment_axios = axios({
+        method:'delete',
+        url:'/api/confession/comment',
+        headers:{
+            Authorization:token,
+        },
+        data:{
+            comment_id:comment_id
+        }
+    })
+
+    delet_comment_axios.then(
+        response => {
+            console.log(response)
+            if(response.data.code===200){
+                //删除成功
+            }else if(response.data.code===200502){
+                //权限不足
+            }
+        }
+    )
+}
 </script>
 
 <style scoped>

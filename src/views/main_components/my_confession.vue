@@ -26,6 +26,7 @@
         ></el-date-picker>
 
         <el-checkbox label="是否匿名" v-model="temp_post_post.unnamed.value">匿名</el-checkbox>
+        <el-checkbox label="是否公开" v-model="temp_post_post.private.value">私密</el-checkbox>
     </div>
     <div style="margin-top: 20px; text-align: right;">
         <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
@@ -157,7 +158,8 @@ const control_post_dialog = control_post_dialog_func()
 const temp_post_post = {
     post:ref(''),
     unnamed:ref(false),
-    post_unix:ref('')
+    post_unix:ref(''),
+    private:ref(false)
 }
 
 const updatePostUnix = (value:number) => {
@@ -219,6 +221,8 @@ const handle_commit_post = () => {
         error_alert_message.value = '帖子内容不能为空'
         commit_error_alert.handle_alert()
     }else{
+        console.log("是否私密:")
+        console.log(temp_post_post.private.value)
         const commit_promise = axios({
             method: 'post',
             url: '/api/confession',
@@ -229,6 +233,7 @@ const handle_commit_post = () => {
                 content: temp_post_post.post.value,
                 unnamed: temp_post_post.unnamed.value,
                 ...(temp_post_post.post_unix.value ? { post_unix: temp_post_post.post_unix.value } : {}),
+                private: temp_post_post.private.value
             }
         });
 
@@ -363,6 +368,8 @@ const handle_revise_post = () => {
                 content:temp_post.value
             }
         })
+
+        
 
         revise_promise.then(
             response => {
