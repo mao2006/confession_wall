@@ -3,26 +3,35 @@
         <el-alert title="成功" v-if="commit_success_alert.is_alert.value===true" type="success" center show-icon />
         <!-- 发布帖子 -->
         <el-dialog
-            v-model="control_post_dialog.dialog_visible_status.value"
-            title="发布帖子"
-            width="600"
-        >
-            <el-alert :title="error_alert_message" v-if="commit_error_alert.is_alert.value===true" type="error" center show-icon />
-            <div>
-                <el-input 
-                    type="textarea" 
-                    placeholder="输入帖子内容" 
-                    maxlength="200"
-                    v-model="temp_post_post.post.value"
-                    rows="10"  
-                ></el-input>
-                <el-checkbox label="是否匿名" v-model="temp_post_post.unnamed.value">匿名</el-checkbox>
-            </div>
-            <div style="margin-top: 20px; text-align: right;">
-                <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
-                <el-button type="primary" @click="handle_commit_post">发布</el-button>
-            </div>
-        </el-dialog>
+    v-model="control_post_dialog.dialog_visible_status.value"
+    title="发布帖子"
+    width="600"
+>
+    <el-alert :title="error_alert_message" v-if="commit_error_alert.is_alert.value===true" type="error" center show-icon />
+    <div>
+        <el-input 
+            type="textarea" 
+            placeholder="输入帖子内容" 
+            maxlength="200"
+            v-model="temp_post_post.post.value"
+            rows="10"  
+        ></el-input>
+
+        <el-date-picker
+            v-model="temp_post_post.post_unix.value"
+            type="datetime"
+            placeholder="选择时间"
+            format="yyyy-MM-dd HH:mm:ss"
+            @change="updatePostUnix"
+        ></el-date-picker>
+
+        <el-checkbox label="是否匿名" v-model="temp_post_post.unnamed.value">匿名</el-checkbox>
+    </div>
+    <div style="margin-top: 20px; text-align: right;">
+        <el-button @click="control_post_dialog.to_unvisible">取消</el-button>
+        <el-button type="primary" @click="handle_commit_post">发布</el-button>
+    </div>
+</el-dialog>
         <!-- 修改帖子 -->
         <el-dialog
             v-model="control_revise_dialog.dialog_visible_status.value"
@@ -147,8 +156,19 @@ const control_post_dialog = control_post_dialog_func()
 
 const temp_post_post = {
     post:ref(''),
-    unnamed:ref(false)
+    unnamed:ref(false),
+    post_unix:ref('')
 }
+
+const updatePostUnix = (value:number) => {
+    console.log("选择的时间值:", value);
+    if (value) {
+        temp_post_post.post_unix.value = String(Math.floor(new Date(value).getTime() / 1000));
+        console.log("转换后的 Unix 时间戳:", temp_post_post.post_unix.value);
+    } else {
+        temp_post_post.post_unix.value = '';
+    }
+};
 
 const commit_error_message = ref('')
 
@@ -200,16 +220,17 @@ const handle_commit_post = () => {
         commit_error_alert.handle_alert()
     }else{
         const commit_promise = axios({
-            method:'post',
-            url:'/api/confession',
-            headers:{
-                Authorization:token,
+            method: 'post',
+            url: '/api/confession',
+            headers: {
+                Authorization: token,
             },
-            data:{
-                content:temp_post_post.post.value,
-                unnamed:temp_post_post.unnamed.value
+            data: {
+                content: temp_post_post.post.value,
+                unnamed: temp_post_post.unnamed.value,
+                ...(temp_post_post.post_unix.value ? { post_unix: temp_post_post.post_unix.value } : {}),
             }
-        })
+        });
 
         commit_promise.then(
             response => {
