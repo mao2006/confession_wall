@@ -33,7 +33,7 @@
                 </template>
             </el-dialog>
 
-            <el-alert title="屏蔽成功" v-if="mute_success_alert.is_alert.value" type="success" center show-icon />
+            <el-alert title="成功" v-if="mute_success_alert.is_alert.value" type="success" center show-icon />
             <div v-for="(item, index) in all_post" :key="item.post_id">
                 <div class="scrollbar-demo-item">
                     <div class="post-info">
@@ -46,6 +46,9 @@
                     </div>
                     <div class="content">{{ item.content }}</div>
                     <div class="button-container">
+                        <el-button type="success" @click="handle_like(item.post_id)">
+                            点赞 : {{ item.likes }}
+                        </el-button>
                         <el-button type="primary" @click="handle_comment_button(item.post_id)">查看评论</el-button>
                         <el-button type="danger" @click="handle_mute_firststep(item.post_id)">屏蔽</el-button>
                     </div>
@@ -76,6 +79,7 @@ interface Post {
     avatar: string; // 头像URL
     nickname: string; // 用户昵称
     content: string; // 帖子内容
+    likes:number
 }
 
 interface Comment {
@@ -241,27 +245,50 @@ const handle_finish_comment = () => {
 }
 
 
-//删除评论
+// //删除评论
 
-const delete_comment = (comment_id:number) => {
-    const delet_comment_axios = axios({
-        method:'delete',
-        url:'/api/confession/comment',
+// const delete_comment = (comment_id:number) => {
+//     const delet_comment_axios = axios({
+//         method:'delete',
+//         url:'/api/confession/comment',
+//         headers:{
+//             Authorization:token,
+//         },
+//         data:{
+//             comment_id:comment_id
+//         }
+//     })
+
+//     delet_comment_axios.then(
+//         response => {
+//             console.log(response)
+//             if(response.data.code===200){
+//                 console.log("删除成功")
+//             }else if(response.data.code===200502){
+//                 //权限不足
+//             }
+//         }
+//     )
+// }
+
+//点赞评论
+const handle_like = (post_id:number) => {
+    const like_promise = axios({
+        method:"post",
+        url:"/api/confession/like",
         headers:{
             Authorization:token,
         },
         data:{
-            comment_id:comment_id
+            post_id:post_id
         }
     })
 
-    delet_comment_axios.then(
+    like_promise.then(
         response => {
-            console.log(response)
-            if(response.data.code===200){
-                //删除成功
-            }else if(response.data.code===200502){
-                //权限不足
+            if(response.data.code === 200){
+                mute_success_alert.handle_alert()
+                refresh_post()
             }
         }
     )
