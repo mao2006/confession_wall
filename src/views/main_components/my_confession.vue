@@ -48,6 +48,8 @@
                     v-model="temp_post"
                     rows="10"  
                 ></el-input>
+                <el-checkbox v-model="is_post_private">私密</el-checkbox>
+                <el-checkbox v-model="is_unnamed">匿名</el-checkbox>
             </div>
             <div style="margin-top: 20px; text-align: right;">
                 <el-button @click="control_revise_dialog.to_unvisible">取消</el-button>
@@ -80,7 +82,7 @@
                         <div class="content">{{ item.content }}</div>
                     </div>
                     <div class="button-container">
-                        <el-button type="primary" @click = "revise_post_first_step(item.post_id,item.content)">修改</el-button>
+                        <el-button type="primary" @click = "revise_post_first_step(item.post_id,item.content,item.private,item.unnamed)">修改</el-button>
                         <el-button type="danger" @click = "handle_delete_first_step(item.post_id)">删除</el-button>
                     </div>
                 </div>
@@ -97,7 +99,9 @@ import { user_store } from '@/stores/store';
 
 interface Post {
     post_id: number; 
-    content: string; 
+    content: string;
+    unnamed:boolean;
+    private:boolean;
 }
 
 const temp_user_store = user_store();
@@ -341,11 +345,16 @@ const control_revise_dialog = control_revise_dialog_func()
 
 const temp_post = ref('')
 const post_id_revise = ref(0)
+const is_post_private = ref(false)
+const is_unnamed = ref(false)
 
-const revise_post_first_step = (post_id:number,post:string) => {
+const revise_post_first_step = (post_id:number,post:string,is_private:boolean,unnamed:boolean) => {
     temp_post.value = post
     post_id_revise.value = post_id
+    is_post_private.value = is_private
+    is_unnamed.value = unnamed
     control_revise_dialog.to_visible()
+    // console.log(is_post_private.value)
     // console.log(temp_post.value)
     // console.log(post_id_revise.value)
 }
@@ -365,7 +374,9 @@ const handle_revise_post = () => {
             },
             data:{
                 post_id:post_id_revise.value,
-                content:temp_post.value
+                content:temp_post.value,
+                private:is_post_private.value,
+                unnamed:is_unnamed.value
             }
         })
 
