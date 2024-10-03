@@ -22,6 +22,7 @@
             type="datetime"
             placeholder="选择时间"
             format="yyyy-MM-dd HH:mm:ss"
+            value-format="X"
             @change="updatePostUnix"
         ></el-date-picker>
 
@@ -175,7 +176,7 @@ const temp_post_post = {
 const updatePostUnix = (value:number) => {
     console.log("选择的时间值:", value);
     if (value) {
-        temp_post_post.post_unix.value = String(Math.floor(new Date(value).getTime() / 1000));
+        // temp_post_post.post_unix.value = String(Math.floor(new Date(value).getTime() / 1000));
         console.log("转换后的 Unix 时间戳:", temp_post_post.post_unix.value);
     } else {
         temp_post_post.post_unix.value = '';
@@ -233,6 +234,7 @@ const handle_commit_post = () => {
     }else{
         console.log("是否私密:")
         console.log(temp_post_post.private.value)
+        const post_unix = String(temp_post_post.post_unix.value)
         const commit_promise = axios({
             method: 'post',
             url: '/api/confession',
@@ -242,7 +244,7 @@ const handle_commit_post = () => {
             data: {
                 content: temp_post_post.post.value,
                 unnamed: temp_post_post.unnamed.value,
-                ...(temp_post_post.post_unix.value ? { post_unix: temp_post_post.post_unix.value } : {}),
+                ...(temp_post_post.post_unix.value ? { post_unix: post_unix } : {}),
                 private: temp_post_post.private.value
             }
         });
