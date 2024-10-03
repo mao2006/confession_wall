@@ -46,9 +46,11 @@
                     </div>
                     <div class="content">{{ item.content }}</div>
                     <div class="button-container">
-                        <el-button type="success" @click="handle_like(item.post_id)">
-                            点赞 : {{ item.likes }}
-                        </el-button>
+                        <div class="like-container">
+                            <VueStarPlus @click="handle_like(item.post_id)" :color="item.isLiked ? '#ff0000' : '#bfcbd9'">
+                                <template #icon>❤ {{ item.likes }}</template>
+                            </VueStarPlus>
+                        </div>
                         <el-button type="primary" @click="handle_comment_button(item.post_id)">查看评论</el-button>
                         <el-button type="danger" @click="handle_mute_firststep(item.post_id)">屏蔽</el-button>
                     </div>
@@ -74,12 +76,14 @@ import { ref, onBeforeMount } from 'vue';
 import axios from 'axios';
 import { user_store } from '@/stores/store';
 
+
 interface Post {
     post_id: number; // 帖子ID
     avatar: string; // 头像URL
     nickname: string; // 用户昵称
     content: string; // 帖子内容
-    likes:number
+    likes:number;//点赞数
+    isLiked:boolean//是否已点赞
 }
 
 interface Comment {
@@ -292,6 +296,12 @@ const handle_like = (post_id:number) => {
             }
         }
     )
+
+    like_promise.catch(
+        error => {
+            console.log(error)
+        }
+    )
 }
 </script>
 
@@ -331,9 +341,20 @@ const handle_like = (post_id:number) => {
 }
 
 .button-container {
+    position: relative;
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
 }
+
+.like-container {
+    position: absolute; 
+    left: 1160px;
+    bottom: 68px;
+    margin: 0 0;
+}
+
 
 .comment-item {
     display: flex;
