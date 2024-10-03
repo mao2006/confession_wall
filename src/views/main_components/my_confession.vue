@@ -78,12 +78,17 @@
             <div style="padding: 16px;">
                 <div v-for="(item, index) in temp_post_package"  class="scrollbar-demo-item">
                     <div class="post-info">
-                        <div class="post-id">帖子: {{ item.post_id }}</div>
+                        <div class="post-id" style="font-size: larger;">id: {{ item.post_id }}</div>
                         <div class="content">{{ item.content }}</div>
                     </div>
-                    <div class="button-container">
-                        <el-button type="primary" @click = "revise_post_first_step(item.post_id,item.content,item.private,item.unnamed)">修改</el-button>
-                        <el-button type="danger" @click = "handle_delete_first_step(item.post_id)">删除</el-button>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                        <div class="post-info" style="font-size: small;margin-top: 10px;">
+                            获赞: {{ item.likes }}     匿名: {{ item.unnamed ? "是" : "否" }}     私密: {{ item.private ? "是" : "否" }}
+                        </div>
+                        <div class="button-container">
+                            <el-button type="primary" @click="revise_post_first_step(item.post_id, item.content, item.private, item.unnamed)">修改</el-button>
+                            <el-button type="danger" @click="handle_delete_first_step(item.post_id)">删除</el-button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -102,6 +107,7 @@ interface Post {
     content: string;
     unnamed:boolean;
     private:boolean;
+    likes:number
 }
 
 const temp_user_store = user_store();
