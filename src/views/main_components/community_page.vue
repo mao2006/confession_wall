@@ -47,10 +47,12 @@
                     <div class="content">{{ item.content }}</div>
                     <div class="button-container">
                         <div class="like-container">
-                            <VueStarPlus @click="handle_like(item.post_id)" :color="item.isLiked ? '#ff0000' : '#bfcbd9'">
+
+                            <VueStarPlus @click="handle_like(item.post_id)"  :style="{ color: item.is_liked ? '#ff0000' : '#bfcbd9' }">
                                 <template #icon>❤ {{ item.likes }}</template>
                             </VueStarPlus>
                         </div>
+
                         <el-button type="primary" @click="handle_comment_button(item.post_id)">查看评论</el-button>
                         <el-button type="danger" @click="handle_mute_firststep(item.post_id)">屏蔽</el-button>
                     </div>
@@ -83,7 +85,7 @@ interface Post {
     nickname: string; // 用户昵称
     content: string; // 帖子内容
     likes:number;//点赞数
-    isLiked:boolean//是否已点赞
+    is_liked:boolean//是否已点赞
 }
 
 interface Comment {
@@ -138,6 +140,7 @@ const refresh_post = () => {
         .then(response => {
             if (response.data.code === 200) {
                 all_post.value = response.data.data.confession_list;
+                console.log(all_post.value)
             }
         })
         .catch(console.error);
@@ -291,7 +294,7 @@ const handle_like = (post_id:number) => {
     like_promise.then(
         response => {
             if(response.data.code === 200){
-                mute_success_alert.handle_alert()
+                // mute_success_alert.handle_alert()
                 refresh_post()
             }
         }

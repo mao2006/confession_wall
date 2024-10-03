@@ -107,6 +107,8 @@ const handle_logout = () => {
 </script>
 
 <style scoped>
+
+
 .top {
   position: relative;
   z-index: 10;
@@ -133,4 +135,6 @@ const handle_logout = () => {
   height: 100%;
   box-sizing: border-box;
 }
+
+
 </style>
