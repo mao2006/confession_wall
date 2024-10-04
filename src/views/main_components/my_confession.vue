@@ -21,7 +21,7 @@
             v-model="temp_post_post.post_unix.value"
             type="datetime"
             placeholder="选择时间"
-            format="yyyy-MM-dd HH:mm:ss"
+            format="YYYY-MM-DD HH:mm:ss"
             value-format="X"
             @change="updatePostUnix"
         ></el-date-picker>
