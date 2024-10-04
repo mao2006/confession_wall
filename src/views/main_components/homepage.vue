@@ -207,12 +207,9 @@
         )
     }
 
-    //生命周期钩子 获取个人信息
-    onBeforeMount(
-        //获取个人信息
-        () => {
-            // console.log(typeof(token))
-            const user_message_promise = axios({
+
+    const get_user_message = () => {
+        const user_message_promise = axios({
                 method:'get',
                 url:'/api/user',
                 headers: {
@@ -240,6 +237,13 @@
             )
 
             get_mute_list()
+    }
+    //生命周期钩子 获取个人信息
+    onBeforeMount(
+        //获取个人信息
+        () => {
+            // console.log(typeof(token))
+            get_user_message()
         }
         
     )
@@ -322,7 +326,7 @@
                         change_nickname_alert_visible.value = false
                         console.log(response.data)
                         nickname_success_alert.handle_alert()
-                        location.reload()
+                        get_user_message()
                     }
                 }
             )
@@ -422,7 +426,7 @@
                         console.log(response)
                         change_avater_alert_visible.value = false;
                         nickname_success_alert.handle_alert();
-                        location.reload()
+                        get_user_message()
                     }
                 }
             )
