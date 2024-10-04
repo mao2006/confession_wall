@@ -353,7 +353,7 @@ const handle_like = (post_id:number) => {
 
 .like-container {
     position: absolute; 
-    left: 1160px;
+    left: calc((100vw - 200px) * 0.65 + 10vw);
     bottom: 68px;
     margin: 0 0;
 }
@@ -419,4 +419,5 @@ const handle_like = (post_id:number) => {
     white-space: normal;
     word-break: break-all; /* 添加此行以确保换行 */
 }
+
 </style>
