@@ -225,6 +225,7 @@
                     // console.log(response.data)
                     if(response.data.code===200){
                         // console.log(response.data.data)
+                        console.log(response.data.data)
                         temp_user_package.change_user_message(response.data.data.nickname,response.data.data.avatar)
                         // console.log(temp_user_package.nickname.value)
                         // console.log(temp_user_package.avatar_url.value)
@@ -402,6 +403,8 @@
         if (response.data.code === 200) {
             const url:string = response.data.data.url
 
+            // console.log(url)
+
             const submit_avator_promise = axios({
                 method:'put',
                 url:'/api/user',
@@ -416,6 +419,7 @@
             submit_avator_promise.then(
                 response => {
                     if(response.data.code===200){
+                        console.log(response)
                         change_avater_alert_visible.value = false;
                         nickname_success_alert.handle_alert();
                         location.reload()

@@ -77,11 +77,16 @@
         </el-dialog>
         <el-scrollbar style="flex: 1; margin-top: 20px;">
             <div style="padding: 16px;">
-                <div v-for="(item, index) in temp_post_package"  class="scrollbar-demo-item">
+                <div v-for="(item, index) in temp_post_package" class="scrollbar-demo-item">
+                    <div class="post-time">
+                        发帖时间: {{    time_switch(item.post_unix)   }}
+                    </div>
+                    
                     <div class="post-info">
                         <div class="post-id" style="font-size: larger;">id: {{ item.post_id }}</div>
                         <div class="content">{{ item.content }}</div>
                     </div>
+
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
                         <div class="post-info" style="font-size: small;margin-top: 10px;">
                             获赞: {{ item.likes }}     匿名: {{ item.unnamed ? "是" : "否" }}     私密: {{ item.private ? "是" : "否" }}
@@ -108,7 +113,8 @@ interface Post {
     content: string;
     unnamed:boolean;
     private:boolean;
-    likes:number
+    likes:number;
+    post_unix:number
 }
 
 const temp_user_store = user_store();
@@ -130,6 +136,7 @@ const refresh_post = () => {
 
     get_my_comfession_promise.then(response => {
         if (response.data.code === 200) {
+            console.log(response)
             temp_post_package.value = response.data.data.my_confession_list;
         }
     });
@@ -225,6 +232,21 @@ const commit_success_alert_func = ()=> {
 
 const commit_success_alert = commit_success_alert_func()
 
+const time_switch = (unixtime:number) => {
+    var date = new Date(unixtime*1000);
+    var year = date.getFullYear();
+    var month = ("0" + (date.getMonth() + 1)).substr(-2);
+    var day = ("0" + date.getDate()).substr(-2);
+    var date = new Date(unixtime*1000);
+
+    var hour = ("0" + date.getHours()).substr(-2);
+    var minutes = ("0" + date.getMinutes()).substr(-2);
+    var seconds = ("0" + date.getSeconds()).substr(-2);
+
+
+    return year + "-" + month + "-" + day + " "+ hour + ":" + minutes + ":" + seconds ;
+}
+
 const handle_commit_post = () => {
     console.log(temp_post_post.post.value)
     console.log(temp_post_post.unnamed.value)
@@ -234,7 +256,8 @@ const handle_commit_post = () => {
     }else{
         console.log("是否私密:")
         console.log(temp_post_post.private.value)
-        const post_unix = String(temp_post_post.post_unix.value)
+        const post_unix = Number(temp_post_post.post_unix.value)
+        console.log(typeof(post_unix))
         const commit_promise = axios({
             method: 'post',
             url: '/api/confession',
@@ -338,7 +361,7 @@ const control_revise_dialog_func = () => {
         dialog_visible_status.value = true
     }
     const to_unvisible = () => {
-        dialog_visible_status.value = false
+        dialog_visible_status.value = false 
     }
 
     return {
@@ -411,6 +434,7 @@ const handle_revise_post = () => {
 
 <style scoped>
 .scrollbar-demo-item {
+    position: relative;
     background-color: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -458,5 +482,12 @@ const handle_revise_post = () => {
 
 .el-button.danger {
     background-color: #F56C6C;
+}
+
+.post-time {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 15px;
 }
 </style>
